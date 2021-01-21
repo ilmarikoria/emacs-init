@@ -1,0 +1,195 @@
+
+* PACKAGES
+#+begin_src emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  (package-initialize)
+#+end_src
+
+* APPEARANCE
+** GENERAL
+#+begin_src emacs-lisp
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (show-paren-mode 1)
+  (delete-selection-mode t)
+  (global-visual-line-mode t)
+  (setq inhibit-startup-screen t)
+  (display-time-mode 1)
+  (display-battery-mode 1)
+  (setq initial-buffer-choice "~/Dropbox/org/todo/todo.org")
+#+end_src
+** DIRED
+#+begin_src emacs-lisp
+  (put 'dired-find-alternate-file 'disabled nil)
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (dired-hide-details-mode)))
+#+end_src
+** SOLARIZED THEME
+#+begin_src emacs-lisp
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/custom-packages/emacs-color-theme-solarized")
+  (load-theme 'solarized t)
+  (customize-set-variable 'frame-background-mode 'dark)
+#+end_src
+* ORG-STUFF
+** ORG-GENERAL
+#+begin_src emacs-lisp
+  (setq org-clock-into-drawer "POMODORO")
+  (setq org-log-into-drawer t)
+  (setq org-startup-with-inline-images t)
+  (setq org-image-actual-width nil)
+  (setq org-indent-mode t)
+  (setq org-startup-indented t)
+  (setq org-startup-folded t)
+#+end_src
+** ORG-EXTRA
+#+begin_src emacs-lisp
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines))
+#+end_src
+** ORG-AGENDA
+#+begin_src emacs-lisp
+  (add-hook 'org-agenda-mode-hook
+            (lambda ()
+              (visual-line-mode -1)
+              (toggle-truncate-lines 1)))
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (setq org-agenda-window-setup 'only-window)
+  (setq org-agenda-files
+        '("~/Dropbox/org/todo/todo.org"))
+#+end_src
+** ORG-POMODORO
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x p") 'org-pomodoro)
+#+end_src
+** ORG-ROAM
+#+begin_src emacs-lisp
+  (setq org-roam-directory "~/Dropbox/org/org-roam")
+  (add-hook 'after-init-hook 'org-roam-mode)
+  (global-set-key (kbd "C-c r") 'org-roam-find-file)
+  (global-set-key (kbd "C-c i") 'org-roam-insert)
+  (setq org-roam-completion-system 'helm)
+  (setq org-roam-db-update-method 'immediate)
+  (require 'org-roam-bibtex)
+  (add-hook 'after-init-hook #'org-roam-bibtex-mode)
+  (setq org-roam-bibtex-mode t)
+#+end_src
+** ORG-REF
+#+begin_src emacs-lisp
+  (require 'org-ref)
+  (setq bibtex-completion-bibliography "~/Dropbox/academic_stuff/bibliography/bibliography.bib"
+        bibtex-completion-notes-path "~/Dropbox/academic_stuff/bibliography/bibliography.bib")
+  (setq reftex-default-bibliography '("~/Dropbox/academic_stuff/bibliography/bibliography.bib"))
+  (setq org-ref-default-bibliography '("~/Dropbox/academic_stuff/bibliography/bibliography.bib"))
+  (setq org-ref-cite-onclick-function 'org-ref-cite-click-helm)
+  (setq org-ref-insert-cite-function 'org-ref-helm-insert-cite-link)
+  (setq org-ref-insert-label-function 'org-ref-helm-insert-label-link)
+  (setq org-ref-insert-link-function 'org-ref-helm-insert-cite-link)
+  (setq org-ref-insert-ref-function 'org-ref-helm-insert-ref-link)
+  (setq org-ref-notes-function 'orb-notes-fn)
+#+end_src
+** ORG-LATEX-EXPORT
+#+begin_src emacs-lisp
+  (setq org-latex-pdf-process
+        '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "bibtex %b"
+          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+end_src
+* CAPTURE-TEMPLATES
+# clean this up
+#+begin_src emacs-lisp
+  (global-set-key (kbd"<f6>")'org-capture)
+  (setq org-capture-templates
+        '(("qp" "paper-ideas" entry
+           (file+headline "~/Dropbox/academic_stuff/papers-projects/writing-notes/writing-notes.org" "paper-ideas")
+           (file "~/Dropbox/academic_stuff/papers-projects/writing-notes/ideas-template.txt"))
+          ("o" "goal" entry
+           (file+headline "~/Dropbox/org/todo.org" "GOALS")
+           (file "~/Dropbox/org/templates/goal.txt"))
+          ("d" "diary" entry
+           (file+headline "~/Dropbox/org/todo/diary.org" "2021")
+           (file "~/Dropbox/org/todo/diary-template.txt"))
+          ("w" "weekly-review" entry
+          (file+headline "~/Dropbox/org/todo/weekly-review.org" "2021")
+          (file "~/Dropbox/org/todo/templates/weekly-review.txt"))
+          ("l" "lesson" entry
+           (file+headline "~/Dropbox/org/todo.org" "LESSONS")
+           (file "~/Dropbox/org/templates/lesson.txt"))
+          ("g" "dnd")
+          ("gn" "NPC" entry
+           (file+headline "~/Dropbox/dnd/notes/notes.org" "NPC-Phandelver")
+           (file "~/Dropbox/dnd/notes/npc-template.txt"))
+          ("gi" "INIT" entry
+           (file+headline "~/Dropbox/dnd/notes/notes.org" "PLAYERS-INIT")
+           (file "~/Dropbox/dnd/notes/init-template.txt"))
+          ("qi" "random-ideas" item
+           (file+headline "~/Dropbox/org/todo/random-ideas.org" "RANDOM-IDEAS")
+           (file "~/Dropbox/org/todo/templates/random-ideas.txt"))
+          ("r" "reminders")
+          ("rl" "lesson-reminder" entry
+           (file+headline "~/Dropbox/org/todo.org" "LESSONS")
+           (file "~/Dropbox/org/templates/lesson-template.txt"))
+          ("rg" "general-reminder" entry
+           (file+headline "~/Dropbox/org/todo.org" "GENERAL")
+           (file "~/Dropbox/org/templates/general-event-template.txt"))
+          ("re" "event-reminder" entry
+           (file+headline "~/Dropbox/org/todo.org" "EVENTS")
+           (file "~/Dropbox/org/templates/event-template.txt"))
+          ("ra" "applications-reminder" entry
+           (file+headline "~/Dropbox/org/todo.org" "APPLICATIONS")
+           (file "~/Dropbox/org/templates/applications-template.txt"))
+          ("qd" "quick-notes-dissertation" item
+           (file+headline "~/Dropbox/academic_stuff/dissertation/notes/quick-notes.org" "quick-notes")
+           (file "~/Dropbox/academic_stuff/dissertation/notes/capture-templates/quick-notes.txt"))
+          ("q" "quick-notes")))
+#+end_src
+* UTILS
+** OPENWITH
+#+begin_src emacs-lisp
+  (openwith-mode t)
+  (setq openwith-associations
+        (list (list (openwith-make-extension-regexp '("pdf"))
+                    "okular" '(file))
+              (list (openwith-make-extension-regexp '("flac" "mp3" "wav"))
+                    "vlc" '(file))
+              (list (openwith-make-extension-regexp '("avi" "flv" "mov" "mp4"
+                                                      "mpeg" "mpg" "ogg" "wmv"))
+                    "vlc" '(file))
+              (list (openwith-make-extension-regexp '("bmp" "jpeg" "jpg" "png"))
+                    "ristretto" '(file))
+              (list (openwith-make-extension-regexp '("doc" "docx" "odt"))
+                    "libreoffice" '("--writer" file))
+              (list (openwith-make-extension-regexp '("ods" "xls" "xlsx"))
+                    "libreoffice" '("--calc" file))
+              (list (openwith-make-extension-regexp '("odp" "pps" "ppt" "pptx"))
+                    "libreoffice" '("--impress" file))
+              ))
+#+end_src
+
+** HELM
+#+begin_src emacs-lisp
+  (require 'helm-config)
+  (add-hook 'after-init-hook 'helm-mode)
+#+end_src
+** EMOJIS
+#+begin_src emacs-lisp
+  (require 'emojify)
+  (add-hook 'after-init-hook 'global-emojify-mode)
+#+end_src
+** CANGJIE
+#+begin_src emacs-lisp
+  (require 'cangjie)
+  (global-set-key (kbd "C-c j") 'cangjie-at-point)
+#+end_src
+** NEOMUTT
+#+begin_src emacs-lisp
+  (add-to-list 'auto-mode-alist '("/neomutt" . org-mode))
+#+end_src
+** WORD-COUNT
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x w") 'count-words-region)
+#+end_src
