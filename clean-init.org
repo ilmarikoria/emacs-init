@@ -194,3 +194,10 @@
   (global-set-key (kbd "C-c i") 'org-roam-insert)
   (global-set-key (kbd"<f6>")'org-capture)
 #+end_src
+* EVIL
+#+begin_src emacs-lisp
+(require 'evil)
+(evil-mode 1)
+#+end_src
+
+
