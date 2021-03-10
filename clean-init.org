@@ -105,9 +105,9 @@
   (setq org-roam-dailies-capture-templates
            '(("f" "fleeting-notes" entry
               #'org-roam-capture--get-point
-              "* %?"
-              :file-name "~/Dropbox/org/org-roam/fleeting-notes/%<%Y-%m-%d>"
-              :head "#+TITLE: %<%Y-%m-%d>\n#+ROAM_TAGS: =FLE=\n")))
+              "*  %?"
+              :file-name "~/Dropbox/org/org-roam/fleeting-notes/%<%Y-%m-%d>-fleeting-note"
+              :head "#+TITLE: %<%Y-%m-%d>-fleeting-note\n#+ROAM_TAGS: =FLE=\n")))
 #+end_src
 ** ORG-REF
 #+begin_src emacs-lisp
@@ -122,6 +122,7 @@
   (setq org-ref-insert-link-function 'org-ref-helm-insert-cite-link)
   (setq org-ref-insert-ref-function 'org-ref-helm-insert-ref-link)
   (setq org-ref-notes-function 'orb-notes-fn)
+  (setq org-ref-default-citation-link "citealt")
 #+end_src
 ** ORG-LATEX-EXPORT
 #+begin_src emacs-lisp
@@ -145,7 +146,12 @@
           ("n" "bib-note-macro" plain
            (file "~/Dropbox/org/org-todo/weekly-review.org") ;;just a placeholder
            (file "~/Dropbox/org/org-templates/bib-note-macro.txt"))
-          ))
+	      ("p" "paper-setup" plain
+           (file "~/Dropbox/org/org-todo/weekly-review.org")
+           (file "~/Dropbox/org/org-templates/paper-setup.txt"))
+          ("b" "bible-words" plain
+           (file "~/Dropbox/academic_stuff/languages/bible-words-chinese/bible-words-chinese.csv")
+           (file "~/Dropbox/org/org-templates/bible-words-chinese.txt"))))
 #+end_src
 
 ** ORG-JOURNAL
@@ -202,7 +208,7 @@
   (global-set-key (kbd "C-c i") 'org-roam-insert)
   (global-set-key (kbd "C-c l") 'org-roam)
   (global-set-key (kbd "C-c c") 'org-ref-insert-link)
-  ;; (global-set-key (kbd "C-c t") 'org-capture)
+  (global-set-key (kbd "<f6>") 'org-capture)
   (global-set-key (kbd "C-c o") 'org-wc-display)
   (global-set-key (kbd "C-c n") #'org-capture-at-point)
   (global-set-key (kbd "C-c e") 'evil-mode)
