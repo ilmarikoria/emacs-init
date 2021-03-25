@@ -229,7 +229,9 @@
 (xclip-mode 1)
 #+end_src
 ** WRITEGOOD
-(require 'writegood-mode)
+#+begin_src emacs-lisp
+  (require 'writegood-mode)
+#+end_src
 * KEY-BINDINGS
 ** GLOBAL
 #+begin_src emacs-lisp
