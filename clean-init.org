@@ -9,31 +9,32 @@
 * APPEARANCE
 ** GENERAL
 #+begin_src emacs-lisp
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (menu-bar-mode -1)
-    (show-paren-mode 1)
-    (delete-selection-mode t)
-    (global-visual-line-mode t)
-    (setq inhibit-startup-screen t)
-    (display-time-mode 1)
-    (display-battery-mode 1)
-    (setq initial-buffer-choice "~/Dropbox/org/org-todo/todo.org")
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (show-paren-mode 1)
+  (delete-selection-mode t)
+  (display-battery-mode 1)
+  (setq initial-buffer-choice "~/Dropbox/org/org-todo/todo.org"
+        inhibit-startup-screen t)
 #+end_src
 ** HIGHLIGHT-MODE
 #+begin_src emacs-lisp
-  (setq global-hl-line-mode t)
-  (setq hl-line-range-function 'highlight-visual-line)
+  (setq global-hl-line-mode t
+        hl-line-range-function 'highlight-visual-line)
+
   (defun highlight-visual-line ()
     (save-excursion
       (cons (progn (beginning-of-visual-line) (point))
             (progn (end-of-visual-line) (point)))))
+
   (custom-set-faces
-   '(hl-line ((t (:extend t :background "black" :weight semi-bold)))))
+   '(hl-line ((t (:extend t :background "black" :weight normal)))))
 #+end_src
 ** DIRED
 #+begin_src emacs-lisp
   (put 'dired-find-alternate-file 'disabled nil)
+
   (add-hook 'dired-mode-hook
             (lambda ()
               (dired-hide-details-mode)))
@@ -47,13 +48,14 @@
 * ORG
 ** ORG-GENERAL
 #+begin_src emacs-lisp
-  (setq org-clock-into-drawer "TIME")
-  (setq org-log-into-drawer t)
-  (setq org-startup-with-inline-images t)
-  (setq org-image-actual-width nil)
-  (setq org-indent-mode t)
-  (setq org-startup-indented t)
-  (setq org-startup-folded t)
+  (setq org-clock-into-drawer "TIME"
+        org-log-into-drawer t
+        org-startup-with-inline-images t
+        org-image-actual-width nil
+        org-indent-mode t
+        org-startup-indented t
+        org-startup-folded t
+        org-export-coding-system 'utf-8)
 #+end_src
 ** ORG-EXTRA
 #+begin_src emacs-lisp
@@ -67,62 +69,65 @@
               (visual-line-mode -1)
               (toggle-truncate-lines 1)))
 
-  (setq org-agenda-window-setup 'only-window)
-  (setq org-agenda-files
+  (setq org-agenda-window-setup 'only-window
+        org-agenda-files
         '("~/Dropbox/org/org-todo/todo.org"))
 #+end_src
 
 ** ORG-ROAM
 *** ORG-ROAM
 #+begin_src emacs-lisp
-  (setq org-roam-directory "~/Dropbox/org/org-roam/")
-  (setq org-roam-index-file "~/Dropbox/org/org-roam/index.org")
-  (add-hook 'after-init-hook 'org-roam-mode)
-  (setq org-roam-completion-system 'helm)
-  (setq org-roam-db-update-method 'immediate)
-  (setq org-roam-capture-templates
+  (setq org-roam-directory "~/Dropbox/org/org-roam/"
+        org-roam-index-file "~/Dropbox/org/org-roam/index.org"
+        org-roam-completion-system 'helm
+        org-roam-db-update-method 'immediate
+        org-roam-capture-templates
         '(("d" "default" plain (function org-roam--capture-get-point)
            "%?"
            :file-name "~/Dropbox/org/org-roam/permanent-notes/%<%Y%m%d%H%M%S>"
            :head "#+TITLE: %<%Y%m%d%H%M%S>\n#+ROAM_TAGS: =PER= %^{TAGS}\n"
            :unnarrowed t)))
+
+  (add-hook 'after-init-hook 'org-roam-mode)
 #+end_src
 
 *** ORG-ROAM-BIBTEX
 #+begin_src emacs-lisp
   (require 'org-roam-bibtex)
-  (add-hook 'after-init-hook #'org-roam-bibtex-mode)
-  (setq orb-include-citekey-in-titles t)
-  (setq orb-templates
+
+  (setq orb-include-citekey-in-titles t
+        orb-templates
         '(("r" "ref" plain (function org-roam-capture--get-point) ""
            :file-name "~/Dropbox/org/org-roam/reference-notes/${citekey}"
-           :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n#+ROAM_TAGS: =REF= %^{TAGS}\n#+DATE_ADDED: %<%Y-%m-%d>\n" ; <--
+           :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}\n#+ROAM_TAGS: =REF= %^{TAGS}\n#+DATE_ADDED: %<%Y-%m-%d>\n"
            :unnarrowed t)))
+
+  (add-hook 'after-init-hook #'org-roam-bibtex-mode)
 #+end_src
 *** ORG-ROAM-DAILIES
 #+begin_src emacs-lisp
-  (setq org-roam-dailies-directory "~/Dropbox/org/org-roam/fleeting-notes")
-  (setq org-roam-dailies-capture-templates
-           '(("f" "fleeting-notes" entry
-              #'org-roam-capture--get-point
-              "*  %?"
-              :file-name "~/Dropbox/org/org-roam/fleeting-notes/%<%Y-%m-%d>-fleeting-note"
-              :head "#+TITLE: %<%Y-%m-%d>-fleeting-note\n#+ROAM_TAGS: =FLE=\n")))
+  (setq org-roam-dailies-directory "~/Dropbox/org/org-roam/fleeting-notes"
+        org-roam-dailies-capture-templates
+        '(("f" "fleeting-notes" entry
+           #'org-roam-capture--get-point
+           "*  %?"
+           :file-name "~/Dropbox/org/org-roam/fleeting-notes/%<%Y-%m-%d>-fleeting-note"
+           :head "#+TITLE: %<%Y-%m-%d>-fleeting-note\n#+ROAM_TAGS: =FLE=\n")))
 #+end_src
 ** ORG-REF
 #+begin_src emacs-lisp
   (require 'org-ref)
   (setq bibtex-completion-bibliography "~/Dropbox/academic_stuff/bibliography/bibliography.bib"
-        bibtex-completion-notes-path "~/Dropbox/academic_stuff/bibliography/bibliography.bib")
-  (setq reftex-default-bibliography '("~/Dropbox/academic_stuff/bibliography/bibliography.bib"))
-  (setq org-ref-default-bibliography '("~/Dropbox/academic_stuff/bibliography/bibliography.bib"))
-  (setq org-ref-cite-onclick-function 'org-ref-cite-click-helm)
-  (setq org-ref-insert-cite-function 'org-ref-helm-insert-cite-link)
-  (setq org-ref-insert-label-function 'org-ref-helm-insert-label-link)
-  (setq org-ref-insert-link-function 'org-ref-helm-insert-cite-link)
-  (setq org-ref-insert-ref-function 'org-ref-helm-insert-ref-link)
-  (setq org-ref-notes-function 'orb-notes-fn)
-  (setq org-ref-default-citation-link "citealt")
+        bibtex-completion-notes-path "~/Dropbox/academic_stuff/bibliography/bibliography.bib"
+        reftex-default-bibliography '("~/Dropbox/academic_stuff/bibliography/bibliography.bib")
+        org-ref-default-bibliography '("~/Dropbox/academic_stuff/bibliography/bibliography.bib")
+        org-ref-cite-onclick-function 'org-ref-cite-click-helm
+        org-ref-insert-cite-function 'org-ref-helm-insert-cite-link
+        org-ref-insert-label-function 'org-ref-helm-insert-label-link
+        org-ref-insert-link-function 'org-ref-helm-insert-cite-link
+        org-ref-insert-ref-function 'org-ref-helm-insert-ref-link
+        org-ref-notes-function 'orb-notes-fn
+        org-ref-default-citation-link "citealt")
 #+end_src
 ** ORG-LATEX-EXPORT
 #+begin_src emacs-lisp
@@ -139,28 +144,48 @@
     "Insert an org capture template at point."
     (interactive)
     (org-capture 0))
+
   (setq org-capture-templates
-        '(("w" "weekly-review" plain
+        '(("s" "programming-source-block")
+          ("sb" "bash-source-block" plain
+           (file "~/Dropbox/org/org-templates/capture-placeholder.txt")
+           (file "~/Dropbox/org/org-templates/bash-structure-template.txt"))
+          ("w" "weekly-review" plain
            (file "~/Dropbox/org/org-todo/weekly-review.org")
            (file "~/Dropbox/org/org-templates/weekly-review.txt"))
           ("n" "bib-note-macro" plain
            (file "~/Dropbox/org/org-todo/weekly-review.org") ;;just a placeholder
            (file "~/Dropbox/org/org-templates/bib-note-macro.txt"))
-	      ("p" "paper-setup" plain
+          ("p" "paper-setup" plain
            (file "~/Dropbox/org/org-todo/weekly-review.org")
            (file "~/Dropbox/org/org-templates/paper-setup.txt"))
           ("b" "bible-words" plain
            (file "~/Dropbox/academic_stuff/languages/bible-words-chinese/bible-words-chinese.csv")
-           (file "~/Dropbox/org/org-templates/bible-words-chinese.txt"))))
+           (file "~/Dropbox/org/org-templates/bible-words-chinese.txt"))
+          ("e" "event-reminder" entry
+           (file+headline "~/Dropbox/org/org-todo/todo.org" "EVENTS")
+           (file "~/Dropbox/org/org-templates/general-event-template.txt"))	
+          ("c" "papis-add-basic" plain
+           (file "~/Dropbox/org/org-templates/capture-placeholder.txt")
+           (file "~/Dropbox/org/org-templates/papis-add-template.txt"))))
 #+end_src
 
 ** ORG-JOURNAL
 #+begin_src emacs-lisp
   (require 'org-journal)
-  (setq org-journal-dir "~/Dropbox/org/org-journal/")
-  (setq org-journal-date-format "%a, %Y-%m-%d")
-  (setq org-journal-file-format "%Y-%m-%d-journal.org")
+
+  (setq org-journal-dir "~/Dropbox/org/org-journal/"
+        org-journal-date-format "%Y-%m-%d %a"
+        org-journal-file-format "%Y-%m-journal.org"
+        org-journal-enable-agenda-integration t
+        org-journal-file-type 'monthly)
 #+end_src
+
+** ORG-BABEL
+#+begin_src emacs-lisp
+  (setq org-babel-load-languages '((lua . t) (emacs-lisp . t) (shell . t)))
+#+end_src
+
 * UTILS
 ** NEOMUTT
 #+begin_src emacs-lisp
@@ -177,15 +202,18 @@
 #+begin_src emacs-lisp
   (require 'evil)
   (evil-mode 1)
-  (setq evil-want-C-i-jump nil)
-  (setq evil-respect-visual-line-mode t)
-  (setq evil-move-cursor-back nil)
+
+  (setq evil-want-C-i-jump nil
+        evil-respect-visual-line-mode t
+        evil-move-cursor-back nil
+        evil-undo-system nil)
 #+end_src
 *** EVIL-ORG
 #+begin_src emacs-lisp
   (require 'evil-org)
   (add-hook 'org-mode-hook 'evil-org-mode)
   (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
+
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys)
 #+end_src
@@ -196,8 +224,14 @@
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
   (key-chord-mode 1)
 #+end_src
-
+** XCLIP
+#+begin_src emacs-lisp
+(xclip-mode 1)
+#+end_src
+** WRITEGOOD
+(require 'writegood-mode)
 * KEY-BINDINGS
+** GLOBAL
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c w") 'count-words-region)
   (global-set-key (kbd "C-c m") 'rectangle-mark-mode)
@@ -214,7 +248,16 @@
   (global-set-key (kbd "C-c e") 'evil-mode)
   (global-set-key (kbd "C-c d") 'org-roam-dailies-capture-today)
   (global-set-key (kbd "C-c x") 'org-roam-jump-to-index)
+  (global-set-key (kbd "C-c g") 'writegood-mode)
+  (global-set-key (kbd "C-c s") 'async-shell-command)
+  (global-set-key (kbd "C-c 0") 'org-insert-structure-template)
+
 #+end_src
-
-
+** EVIL
+#+begin_src emacs-lisp
+   (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+   (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+   (define-key evil-normal-state-map (kbd "gj") 'evil-next-line)
+   (define-key evil-normal-state-map (kbd "gk") 'evil-previous-line)
+#+end_src
 
