@@ -20,16 +20,9 @@
 #+end_src
 ** HIGHLIGHT-MODE
 #+begin_src emacs-lisp
-  (setq global-hl-line-mode t
-        hl-line-range-function 'highlight-visual-line)
-
-  (defun highlight-visual-line ()
-    (save-excursion
-      (cons (progn (beginning-of-visual-line) (point))
-            (progn (end-of-visual-line) (point)))))
-
-  (custom-set-faces
-   '(hl-line ((t (:extend t :background "black" :weight normal)))))
+     (setq global-hl-line-mode t)
+     (custom-set-faces
+      '(hl-line ((t (:extend t :background "black" :weight normal)))))
 #+end_src
 ** DIRED
 #+begin_src emacs-lisp
@@ -69,7 +62,8 @@
               (visual-line-mode -1)
               (toggle-truncate-lines 1)))
 
-  (setq org-agenda-window-setup 'only-window
+  (setq org-agenda-start-on-weekday nil
+        org-agenda-window-setup 'only-window
         org-agenda-files
         '("~/Dropbox/org/org-todo/todo.org"))
 #+end_src
@@ -110,7 +104,7 @@
         org-roam-dailies-capture-templates
         '(("f" "fleeting-notes" entry
            #'org-roam-capture--get-point
-           "*  %?"
+           "* %<%H:%M> %?"
            :file-name "~/Dropbox/org/org-roam/fleeting-notes/%<%Y-%m-%d>-fleeting-note"
            :head "#+TITLE: %<%Y-%m-%d>-fleeting-note\n#+ROAM_TAGS: =FLE=\n")))
 #+end_src
@@ -150,24 +144,25 @@
           ("sb" "bash-source-block" plain
            (file "~/Dropbox/org/org-templates/capture-placeholder.txt")
            (file "~/Dropbox/org/org-templates/bash-structure-template.txt"))
-          ("w" "weekly-review" plain
+          ("w" "weekly-review" entry 
            (file "~/Dropbox/org/org-todo/weekly-review.org")
            (file "~/Dropbox/org/org-templates/weekly-review.txt"))
           ("n" "bib-note-macro" plain
            (file "~/Dropbox/org/org-todo/weekly-review.org") ;;just a placeholder
            (file "~/Dropbox/org/org-templates/bib-note-macro.txt"))
-          ("p" "paper-setup" plain
-           (file "~/Dropbox/org/org-todo/weekly-review.org")
-           (file "~/Dropbox/org/org-templates/paper-setup.txt"))
           ("b" "bible-words" plain
            (file "~/Dropbox/academic_stuff/languages/bible-words-chinese/bible-words-chinese.csv")
            (file "~/Dropbox/org/org-templates/bible-words-chinese.txt"))
-          ("e" "event-reminder" entry
-           (file+headline "~/Dropbox/org/org-todo/todo.org" "EVENTS")
-           (file "~/Dropbox/org/org-templates/general-event-template.txt"))	
-          ("c" "papis-add-basic" plain
+          ("d" "diary-questions" plain
            (file "~/Dropbox/org/org-templates/capture-placeholder.txt")
-           (file "~/Dropbox/org/org-templates/papis-add-template.txt"))))
+           (file "~/Dropbox/org/org-templates/daily-diary-questions.txt"))
+          ("t" "todo-entry" entry
+           (file+headline "~/Dropbox/org/org-todo/todo.org" "TASK-INDEX")
+           (file "~/Dropbox/org/org-templates/general-todo.txt"))
+          ("a" "anki" plain
+           (file "~/Dropbox/org/org-anki/academic-knowledge.org")
+           (file "~/Dropbox/org/org-templates/anki-academic-knowledge.txt"))
+ ))
 #+end_src
 
 ** ORG-JOURNAL
@@ -183,9 +178,25 @@
 
 ** ORG-BABEL
 #+begin_src emacs-lisp
-  (setq org-babel-load-languages '((lua . t) (emacs-lisp . t) (shell . t)))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((lua . t)
+     (emacs-lisp . t)
+     (shell . t)))
+
 #+end_src
 
+** ORG-BULLETS
+#+begin_src emacs-lisp
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+end_src
+
+** ORG-ANKI-EDITOR
+#+begin_src emacs-lisp
+  (setq anki-editor-create-decks t
+        anki-editor-org-tags-as-anki-tags t)
+#+end_src
 * UTILS
 ** NEOMUTT
 #+begin_src emacs-lisp
@@ -200,13 +211,12 @@
 ** EVIL-MODE
 *** EVIL-BASIC
 #+begin_src emacs-lisp
-  (require 'evil)
-  (evil-mode 1)
+    (require 'evil)
+    (evil-mode 1)
 
-  (setq evil-want-C-i-jump nil
-        evil-respect-visual-line-mode t
-        evil-move-cursor-back nil
-        evil-undo-system nil)
+    (setq evil-want-C-i-jump nil
+          evil-respect-visual-line-mode t
+          evil-move-cursor-back nil)
 #+end_src
 *** EVIL-ORG
 #+begin_src emacs-lisp
